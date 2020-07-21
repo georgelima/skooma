@@ -3,7 +3,7 @@ defmodule Skooma.Map do
   require Logger
 
   def validate_map(data, schema, path) do
-    with :ok <- is_map(data) |> Utils.to_result("Data is not a map"),
+    with :ok <- is_map(data) |> Utils.to_result("Objeto inválido"),
          :ok <- key_handler(data, schema),
          :ok <- value_handler(data, schema, path),
          do: :ok
@@ -29,7 +29,7 @@ defmodule Skooma.Map do
     if Enum.count(missing_keys) == 0 do
       :ok
     else
-      {:error, "Missing required keys: #{inspect missing_keys}"}
+      {:error, "Os campos #{Enum.join(missing_keys, ", ")} são obrigatórios"}
     end
   end
 
