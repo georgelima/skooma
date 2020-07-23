@@ -1,45 +1,49 @@
 defmodule Skooma.Validators do
-  defp stringify_path(path) do
+  defp stringify_path(path, nil) do
     if Enum.count(path) == 0, do: "O valor", else: Enum.join(path, ".")
   end
 
-  def min_length(min) do
+  defp stringify_path(_path, field_name) do
+    field_name
+  end
+
+  def min_length(min, field_name \\ nil) do
     fn data, path ->
       bool = String.length(data) >= min
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ter no mínimo #{min} caracteres"}
+        {:error, "#{stringify_path(path, field_name)} precisa ter no mínimo #{min} caracteres"}
       end
     end
   end
 
-  def max_length(max) do
+  def max_length(max, field_name \\ nil) do
     fn data, path ->
       bool = String.length(data) <= max
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ter no máximo #{max} caracteres"}
+        {:error, "#{stringify_path(path, field_name)} precisa ter no máximo #{max} caracteres"}
       end
     end
   end
 
-  def regex(regex) do
+  def regex(regex, field_name \\ nil) do
     fn data, path ->
       bool = Regex.match?(regex, data)
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ter o formato: #{inspect(regex)}"}
+        {:error, "#{stringify_path(path, field_name)} precisa ter o formato: #{inspect(regex)}"}
       end
     end
   end
 
-  def inclusion(values_list) when is_list(values_list) do
+  def inclusion(values_list, field_name \\ nil) when is_list(values_list) do
     fn data, path ->
       bool = data in values_list
 
@@ -47,55 +51,57 @@ defmodule Skooma.Validators do
         :ok
       else
         {:error,
-         "#{stringify_path(path)} não está inclúido nas opcões: #{Enum.join(values_list, ", ")}"}
+         "#{stringify_path(path, field_name)} não está inclúido nas opcões: #{
+           Enum.join(values_list, ", ")
+         }"}
       end
     end
   end
 
-  def gt(value) do
+  def gt(value, field_name \\ nil) do
     fn data, path ->
       bool = data > value
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ser maior que #{value}"}
+        {:error, "#{stringify_path(path, field_name)} precisa ser maior que #{value}"}
       end
     end
   end
 
-  def gte(value) do
+  def gte(value, field_name \\ nil) do
     fn data, path ->
       bool = data >= value
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ser maior ou igual a #{value}"}
+        {:error, "#{stringify_path(path, field_name)} precisa ser maior ou igual a #{value}"}
       end
     end
   end
 
-  def lt(value) do
+  def lt(value, field_name \\ nil) do
     fn data, path ->
       bool = data < value
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ser menor que #{value}"}
+        {:error, "#{stringify_path(path, field_name)} precisa ser menor que #{value}"}
       end
     end
   end
 
-  def lte(value) do
+  def lte(value, field_name \\ nil) do
     fn data, path ->
       bool = data < value
 
       if bool do
         :ok
       else
-        {:error, "#{stringify_path(path)} precisa ser menor ou igual a #{value}"}
+        {:error, "#{stringify_path(path, field_name)} precisa ser menor ou igual a #{value}"}
       end
     end
   end

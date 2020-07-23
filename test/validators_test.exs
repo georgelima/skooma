@@ -10,6 +10,13 @@ defmodule ValidatorsTest do
     results = Skooma.valid?(test_data, test_schema)
 
     assert(expected_results == results)
+
+    test_schema = [:string, Validators.min_length(4, "password")]
+    expected_results = {:error, ["password precisa ter no mínimo 4 caracteres"]}
+
+    results = Skooma.valid?(test_data, test_schema)
+
+    assert(expected_results == results)
   end
 
   test "max function" do
@@ -18,6 +25,13 @@ defmodule ValidatorsTest do
     expected_results = {:error, ["O valor precisa ter no máximo 7 caracteres"]}
 
     results = Skooma.valid?(test_data, test_schema)
+    assert(expected_results == results)
+
+    test_schema = [:string, Validators.max_length(4, "password")]
+    expected_results = {:error, ["password precisa ter no máximo 4 caracteres"]}
+
+    results = Skooma.valid?(test_data, test_schema)
+
     assert(expected_results == results)
   end
 
